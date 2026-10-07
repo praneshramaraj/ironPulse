@@ -39,7 +39,14 @@ app = Flask(
 )
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
+try:
+    from flask_cors import CORS
+    CORS(app, supports_credentials=True)
+except ImportError:
+    pass
+
 # Environment and HTTPS/Vercel Production Detection
+
 is_vercel = bool(os.environ.get('VERCEL') == '1' or os.environ.get('VERCEL_ENV') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME'))
 is_production = is_vercel or os.environ.get('FLASK_ENV') == 'production' or os.environ.get('ENV') == 'production'
 
